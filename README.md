@@ -1,4 +1,4 @@
-# hive_sample
+# Recipe_App
 
 A new Flutter project.
 
