@@ -35,7 +35,8 @@ class _SearchState extends State<Search> {
                 filled: true,
                 prefixIcon: IconButton(
                     onPressed: () {
-                      Navigator.popAndPushNamed(context, "home");
+                      Navigator.pop(context);
+                      //Navigator.popAndPushNamed(context, "home");
                     },
                     icon: Icon(Icons.arrow_back)),
                 suffixIcon: IconButton(
