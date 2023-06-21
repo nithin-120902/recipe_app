@@ -1,15 +1,17 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, must_be_immutable
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, must_be_immutable, prefer_const_constructors_in_immutables
 
 import 'package:flutter/material.dart';
 import 'dart:core';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:hive_sample/screens/loadingsearchedpage.dart';
+import 'package:hive_sample/screens/homepageloading.dart';
+import 'package:hive_sample/screens/searchedpage.dart';
+import 'package:provider/provider.dart';
 
 //import 'package:hive_sample/searchedpage.dart';
 
 class Search extends StatefulWidget {
-  Map map;
-  Search({super.key, required this.map});
+  //Map map;
+  Search({super.key});
 
   @override
   State<Search> createState() => _SearchState();
@@ -20,6 +22,7 @@ class _SearchState extends State<Search> {
 
   @override
   Widget build(BuildContext context) {
+    final history = context.watch<HomePageLoading>().history;
     return Scaffold(
       body: SafeArea(
           child: Container(
@@ -55,15 +58,15 @@ class _SearchState extends State<Search> {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: widget.map.length,
+                itemCount: history.length,
                 itemBuilder: (BuildContext context, int index) {
                   return InkWell(
                     onTap: () {
-                      searchHistory(widget.map.keys.elementAt(index));
+                      searchHistory(history.elementAt(index));
                     },
                     child: ListTile(
                       leading: Icon(Icons.access_time),
-                      title: Text(widget.map.keys.elementAt(index)),
+                      title: Text(history.elementAt(index)),
                       trailing: Icon(Icons.arrow_outward_rounded),
                     ),
                   );
@@ -81,7 +84,7 @@ class _SearchState extends State<Search> {
     if (text == '' || re.hasMatch(text)) {
       return;
     }
-    await Hive.initFlutter('search_history');
+    await Hive.initFlutter('searchHistory');
     Box box = await Hive.openBox('Box');
     text = text.trim();
     if (box.get(text) == null) {
@@ -96,9 +99,10 @@ class _SearchState extends State<Search> {
     for (var i in keys) {
       map[i] = box.get(i);
     }
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => LoadingSearchedPage(search: text, map: map)));
+    print(text);
+    Provider.of<HomePageLoading>(context,listen:false).appendSearchQuery(text);
+    Navigator.push(context,
+              MaterialPageRoute(
+                  builder:(context) => SearchedPage()));
   }
 }

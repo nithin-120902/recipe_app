@@ -1,13 +1,11 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously, prefer_const_literals_to_create_immutables, must_be_immutable, prefer_const_constructors_in_immutables, prefer_typing_uninitialized_variables
 
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:hive_sample/screens/homepageloading.dart';
 import 'package:hive_sample/screens/search.dart';
+import 'package:hive_sample/screens/shimmerloading.dart';
 import 'package:hive_sample/screens/webview.dart';
 import 'dart:core';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
@@ -17,49 +15,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  Future<Map> history() async {
-    await Hive.initFlutter('search_history');
-    Box box = await Hive.openBox('Box');
-    var keys = box.keys;
-    Map map = {};
-    for (var i in keys) {
-      map[i] = box.get(i);
-    }
-    return map;
-  }
-
-  List completed = [];
-  bool notInCompleted(int ran) {
-    for (var i in completed) {
-      if (i == ran) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  int random(int index,int len) {
-    var ran = Random();
-    int rn = ran.nextInt(len);
-    while (notInCompleted(rn)) {
-      var ran = Random();
-      int rn = ran.nextInt(len);
-    }
-    return rn;
-  }
-  //var apiData;
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final apiData = Provider.of<HomePageLoading>(context, listen: false);
-      apiData.getApiData();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    final apiData = context.watch<HomePageLoading>();
+    //final apiData = context.watch<HomePageLoading>();
+    final apiData = Provider.of<HomePageLoading>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -69,10 +29,16 @@ class _HomeState extends State<Home> {
           SizedBox(
             width: 5,
           ),
-          Text("Recipe"),
+          Text("CookOo"),
         ]),
       ),
-      body: apiData.list==[] ? Center(child:CircularProgressIndicator()) : Container(
+      body: FutureBuilder(
+        future: apiData.getApiData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return ShimmerLoading();
+          } else {
+            return Container(
               margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -83,13 +49,13 @@ class _HomeState extends State<Home> {
                         shrinkWrap: true,
                         primary: true,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
+                            crossAxisCount:
+                                MediaQuery.of(context).size.width ~/ 150,
                             crossAxisSpacing: 15,
                             mainAxisSpacing: 15),
-                        itemCount: apiData.list.length,
+                        itemCount: apiData.suggestionList.length,
                         itemBuilder: (context, i) {
-                          final x =
-                              apiData.list[random(i, apiData.list.length)];
+                          final x = apiData.suggestionList[i];
                           return InkWell(
                             onTap: () {
                               Navigator.push(
@@ -129,16 +95,16 @@ class _HomeState extends State<Home> {
                       ),
                     )
                   ]),
-            ),
+            );
+          }
+        },
+      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          Map map = await history();
+        onPressed: (){
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => Search(
-                        map: map,
-                      )));
+                  builder: (context) => Search()));
         },
         child: const Icon(Icons.search),
       ),

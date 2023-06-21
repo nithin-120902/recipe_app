@@ -11,19 +11,22 @@ import 'package:http/http.dart' as http;
 //import '../service/model.dart';
 
 class HomePageLoading extends ChangeNotifier {
-  bool loading = true;
 
-  List<Model> list = [];
+  List<Model> suggestionList = [];
+  List history = [];
+  List queryList = [];
+  List<Model> searchList = [];
+
+  appendSearchQuery(String query){
+    queryList.insert(0, query);
+  }
 
   getApiData() async {
-    notifyListeners();
-    print("Hii");
-    loading = false;
-    await Hive.initFlutter('search_history');
+    await Hive.initFlutter('searchHistory');
     Box box = await Hive.openBox('Box');
-    if (box.toMap() == {}) {
+    if (box.toMap().isEmpty) {
       var url =
-          "https://api.edamam.com/search?q=&app_id=292ff540&app_key=389aa8ecd494756a7cef3337a9b4b9a4	&from=0&to=100calories=591-722&health=alcohol-free";
+          "https://api.edamam.com/search?q=&app_id=292ff540&app_key=389aa8ecd494756a7cef3337a9b4b9a4&from=0&to=100&calories=591-722&health=alcohol-free";
       var response = await http.get(Uri.parse(url));
       Map json = jsonDecode(response.body);
       json['hits'].forEach((e) {
@@ -32,7 +35,7 @@ class HomePageLoading extends ChangeNotifier {
             image: e['recipe']['image'],
             source: e['recipe']['source'],
             label: e['recipe']['label']);
-        list.add((model));
+        suggestionList.add((model));
       });
     } else {
       var keys = box.keys;
@@ -43,6 +46,9 @@ class HomePageLoading extends ChangeNotifier {
       }
       for (var key in keys) {
         map[key] = ((box.get(key) / sum) * 100).toInt();
+        if(!history.contains(key)){
+          history.add(key);
+        }
       }
       for (var key in map.keys) {
         var url = "https://api.edamam.com/search?q=" +
@@ -58,12 +64,28 @@ class HomePageLoading extends ChangeNotifier {
               image: e['recipe']['image'],
               source: e['recipe']['source'],
               label: e['recipe']['label']);
-          list.add((model));
+          suggestionList.add((model));
         });
       }
     }
-    print("Nithin");
-    print(list);
+    notifyListeners();
+  }
+
+  getSearchQueryApiData() async{
+    searchList=[];
+    var url = "https://api.edamam.com/search?q=" +
+       queryList.elementAt(0) +
+       "&app_id=292ff540&app_key=389aa8ecd494756a7cef3337a9b4b9a4	&from=0&to=100&calories=591-722&health=alcohol-free";
+    var response = await http.get(Uri.parse(url));
+    Map json = jsonDecode(response.body);
+    json['hits'].forEach((e) {
+      Model model = Model(
+          url: e['recipe']['url'],
+          image: e['recipe']['image'],
+          source: e['recipe']['source'],
+          label: e['recipe']['label']);
+      searchList.add((model));
+    });
     notifyListeners();
   }
 }

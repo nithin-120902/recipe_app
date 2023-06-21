@@ -1,8 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:hive_sample/screens/home.dart';
 import 'package:hive_sample/screens/homepageloading.dart';
+import 'package:hive_sample/screens/titlepage.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
           ),
-          home: Home()),
+          home: TitlePage()),
     );
   }
 }
