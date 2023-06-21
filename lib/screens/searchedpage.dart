@@ -7,29 +7,28 @@ import 'package:hive_sample/screens/webview.dart';
 class SearchedPage extends StatefulWidget {
   List list;
   Map map;
-  SearchedPage({super.key,required this.map,required this.list});
+  SearchedPage({super.key, required this.map, required this.list});
 
   @override
   State<SearchedPage> createState() => _SearchedPageState();
 }
 
 class _SearchedPageState extends State<SearchedPage> {
-
-  List completed=[];
-  bool notInCompleted(int ran){
-    for(var i in completed){
-      if(i==ran){
+  List completed = [];
+  bool notInCompleted(int ran) {
+    for (var i in completed) {
+      if (i == ran) {
         return true;
       }
     }
     return false;
   }
 
-  int random(int index){
-    var ran =Random();
+  int random(int index) {
+    var ran = Random();
     int rn = ran.nextInt(widget.list.length);
-    while(notInCompleted(rn)){
-      var ran =Random();
+    while (notInCompleted(rn)) {
+      var ran = Random();
       int rn = ran.nextInt(widget.list.length);
     }
     return rn;
@@ -54,10 +53,8 @@ class _SearchedPageState extends State<SearchedPage> {
           final x = widget.list[random(i)];
           return InkWell(
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Webview(url: x.url)));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => Webview(url: x.url)));
             },
             child: Container(
                 decoration: BoxDecoration(

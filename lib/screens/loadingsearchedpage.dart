@@ -13,15 +13,14 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 class LoadingSearchedPage extends StatefulWidget {
   Map map;
   String search;
-  LoadingSearchedPage({super.key,required this.search, required this.map});
+  LoadingSearchedPage({super.key, required this.search, required this.map});
 
   @override
   State<LoadingSearchedPage> createState() => _LoadingSearchedPageState();
 }
 
 class _LoadingSearchedPageState extends State<LoadingSearchedPage> {
-
-   getApiData(search) async {
+  getApiData(search) async {
     List<Model> list = [];
     var response = await http.get(Uri.parse(
         "https://api.edamam.com/search?q=$search&app_id=292ff540&app_key=389aa8ecd494756a7cef3337a9b4b9a4	&from=0&to=100&calories=591-722&health=alcohol-free"));
@@ -36,7 +35,10 @@ class _LoadingSearchedPageState extends State<LoadingSearchedPage> {
         list.add((model));
       });
     });
-    Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => SearchedPage(list: list,map:widget.map)));
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => SearchedPage(list: list, map: widget.map)));
   }
 
   @override
@@ -44,6 +46,7 @@ class _LoadingSearchedPageState extends State<LoadingSearchedPage> {
     super.initState();
     getApiData(widget.search);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
