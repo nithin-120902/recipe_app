@@ -1,41 +1,45 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, must_be_immutable
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, must_be_immutable, prefer_const_constructors_in_immutables
 
 import 'package:flutter/material.dart';
 import 'dart:core';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:hive_sample/screens/loadingsearchedpage.dart';
+import 'package:hive_sample/screens/homepageloading.dart';
+import 'package:hive_sample/screens/searchedpage.dart';
+import 'package:provider/provider.dart';
 
 //import 'package:hive_sample/searchedpage.dart';
 
 class Search extends StatefulWidget {
-  Map map;
-  Search({super.key,required this.map});
+  //Map map;
+  Search({super.key});
 
   @override
   State<Search> createState() => _SearchState();
 }
 
 class _SearchState extends State<Search> {
-
   final _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final history = context.watch<HomePageLoading>().history;
     return Scaffold(
       body: SafeArea(
-        child:Container(
-          margin: EdgeInsets.symmetric(horizontal: 15),
-          color:Colors.white,
-          child: Column(
-            children: [
-              TextField(
+          child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 15),
+        color: Colors.white,
+        child: Column(
+          children: [
+            TextField(
               decoration: InputDecoration(
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(45)),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(45)),
                 fillColor: Colors.grey[300],
                 filled: true,
                 prefixIcon: IconButton(
                     onPressed: () {
-                      Navigator.popAndPushNamed(context, "home");
+                      Navigator.pop(context);
+                      //Navigator.popAndPushNamed(context, "home");
                     },
                     icon: Icon(Icons.arrow_back)),
                 suffixIcon: IconButton(
@@ -54,15 +58,15 @@ class _SearchState extends State<Search> {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: widget.map.length,
+                itemCount: history.length,
                 itemBuilder: (BuildContext context, int index) {
                   return InkWell(
-                    onTap: (){
-                      searchHistory(widget.map.keys.elementAt(index));
+                    onTap: () {
+                      searchHistory(history.elementAt(index));
                     },
                     child: ListTile(
                       leading: Icon(Icons.access_time),
-                      title: Text(widget.map.keys.elementAt(index)),
+                      title: Text(history.elementAt(index)),
                       trailing: Icon(Icons.arrow_outward_rounded),
                     ),
                   );
@@ -70,32 +74,35 @@ class _SearchState extends State<Search> {
               ),
             ),
           ],
-          ),
-        )
-      ),
+        ),
+      )),
     );
   }
-  
-  void searchHistory(String text) async{
+
+  void searchHistory(String text) async {
     RegExp re = RegExp(r'^[ ]+$');
-    if(text=='' || re.hasMatch(text)){
+    if (text == '' || re.hasMatch(text)) {
       return;
     }
-    await Hive.initFlutter('search_history');
+    await Hive.initFlutter('searchHistory');
     Box box = await Hive.openBox('Box');
-    text=text.trim();
-    if(box.get(text)==null){
-      box.put(text,1);
-    }else{
+    text = text.trim();
+    if (box.get(text) == null) {
+      box.put(text, 1);
+    } else {
       dynamic k = box.get(text);
       box.delete(text);
-      box.put(text,k+1);
+      box.put(text, k + 1);
     }
     dynamic keys = box.keys;
-    Map map ={};
-    for(var i in keys){
-      map[i]=box.get(i);
+    Map map = {};
+    for (var i in keys) {
+      map[i] = box.get(i);
     }
-    Navigator.push(context, MaterialPageRoute(builder: (context) => LoadingSearchedPage(search:text,map: map)));
+    print(text);
+    Provider.of<HomePageLoading>(context,listen:false).appendSearchQuery(text);
+    Navigator.push(context,
+              MaterialPageRoute(
+                  builder:(context) => SearchedPage()));
   }
 }
