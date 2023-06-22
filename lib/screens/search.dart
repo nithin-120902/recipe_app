@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'dart:core';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:hive_sample/screens/homepageloading.dart';
+import 'package:hive_sample/screens/apidatarendering.dart';
 import 'package:hive_sample/screens/searchedpage.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +22,7 @@ class _SearchState extends State<Search> {
 
   @override
   Widget build(BuildContext context) {
-    final history = context.watch<HomePageLoading>().history;
+    final history = context.watch<ApiDataRendering>().history;
     return Scaffold(
       body: SafeArea(
           child: Container(
@@ -99,8 +99,7 @@ class _SearchState extends State<Search> {
     for (var i in keys) {
       map[i] = box.get(i);
     }
-    print(text);
-    Provider.of<HomePageLoading>(context,listen:false).appendSearchQuery(text);
+    Provider.of<ApiDataRendering>(context,listen:false).appendSearchQuery(text);
     Navigator.push(context,
               MaterialPageRoute(
                   builder:(context) => SearchedPage()));
