@@ -25,7 +25,7 @@ class ApiDataRendering extends ChangeNotifier {
   }
 
   getApiData() async {
-    notifyListeners();
+    //notifyListeners();
     try {
       homePageError = false;
       await Hive.initFlutter('searchHistory');
@@ -74,6 +74,7 @@ class ApiDataRendering extends ChangeNotifier {
           });
         }
       }
+      //throw 'this is an error';
       homePageLoading = false;
       notifyListeners();
     } catch (e) {

@@ -13,10 +13,8 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<ApiDataRendering>(create: (_) => ApiDataRendering())
-      ],
+    return ChangeNotifierProvider(
+      create: (context) => ApiDataRendering(),
       child: MaterialApp(
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -26,4 +24,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
