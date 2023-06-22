@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously, prefer_const_literals_to_create_immutables, must_be_immutable, prefer_const_constructors_in_immutables, prefer_typing_uninitialized_variables
 
 import 'package:flutter/material.dart';
-import 'package:hive_sample/screens/homepageloading.dart';
+import 'package:hive_sample/screens/apidatarendering.dart';
 import 'package:hive_sample/screens/search.dart';
 import 'package:hive_sample/screens/shimmerloading.dart';
 import 'package:hive_sample/screens/webview.dart';
@@ -17,9 +17,17 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final apiData = Provider.of<ApiDataRendering>(context, listen:false);
+      apiData.getApiData();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    //final apiData = context.watch<HomePageLoading>();
-    final apiData = Provider.of<HomePageLoading>(context, listen: false);
+    final apiData = Provider.of<ApiDataRendering>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -32,12 +40,15 @@ class _HomeState extends State<Home> {
           Text("CookOo"),
         ]),
       ),
-      body: FutureBuilder(
-        future: apiData.getApiData(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+      body: Consumer<ApiDataRendering>(
+        builder:(context,state,_){
+          if(apiData.homePageLoading){
             return ShimmerLoading();
-          } else {
+          }
+          else if(apiData.homePageError){
+            return Center(child: Text('Error',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),);
+          }
+          else{
             return Container(
               margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
               child: Column(
@@ -97,7 +108,7 @@ class _HomeState extends State<Home> {
                   ]),
             );
           }
-        },
+        }
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
