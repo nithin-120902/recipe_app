@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:hive_sample/screens/apidatarendering.dart';
+import 'package:hive_sample/screens/homepageloading.dart';
 import 'package:hive_sample/screens/titlepage.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<ApiDataRendering>(create: (_) => ApiDataRendering())
+        ChangeNotifierProvider<HomePageLoading>(create: (_) => HomePageLoading())
       ],
       child: MaterialApp(
           theme: ThemeData(
