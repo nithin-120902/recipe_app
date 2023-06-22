@@ -56,11 +56,12 @@ class _SearchState extends State<Search> {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: history.length,
+                itemCount: Provider.of<ApiDataRendering>(context).history.length,
                 itemBuilder: (BuildContext context, int index) {
                   return InkWell(
                     onTap: () {
-                      searchHistory(history.elementAt(index));
+                      searchHistory(Provider.of<ApiDataRendering>(context)
+                          .history.elementAt(index));
                     },
                     child: ListTile(
                       leading: Icon(Icons.access_time),

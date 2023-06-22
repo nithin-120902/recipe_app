@@ -19,13 +19,11 @@ class _SearchedPageState extends State<SearchedPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final apiData = Provider.of<ApiDataRendering>(context, listen: false);
-      apiData.getSearchQueryApiData();
+      Provider.of<ApiDataRendering>(context, listen: false).getSearchQueryApiData();
     });
   }
   @override
   Widget build(BuildContext context) {
-    final apiData = Provider.of<ApiDataRendering>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -39,9 +37,9 @@ class _SearchedPageState extends State<SearchedPage> {
         ]),
       ),
       body: Consumer<ApiDataRendering>(builder: (context, state, _) {
-        if (apiData.searchPageLoading) {
+        if (Provider.of<ApiDataRendering>(context).searchPageLoading) {
           return ShimmerLoading();
-        } else if (apiData.searchPageError) {
+        } else if (Provider.of<ApiDataRendering>(context).searchPageError) {
           return Center(
             child: Text(
               'Error',
@@ -64,9 +62,11 @@ class _SearchedPageState extends State<SearchedPage> {
                               MediaQuery.of(context).size.width ~/ 150,
                           crossAxisSpacing: 15,
                           mainAxisSpacing: 15),
-                      itemCount: apiData.searchList.length,
+                      itemCount: Provider.of<ApiDataRendering>(context)
+                          .searchList.length,
                       itemBuilder: (context, i) {
-                        final x = apiData.searchList[i];
+                        final x = Provider.of<ApiDataRendering>(context)
+                            .searchList[i];
                         return InkWell(
                           onTap: () {
                             Navigator.push(
