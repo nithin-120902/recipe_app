@@ -2,25 +2,18 @@
 
 import 'package:flutter/material.dart';
 import 'dart:core';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:hive_sample/screens/apidatarendering.dart';
-import 'package:hive_sample/screens/searchedpage.dart';
+import 'package:hive_sample/bloc/querypage/querypage_bloc.dart';
+import 'package:hive_sample/screens/querypage.dart';
 import 'package:provider/provider.dart';
 
-class Search extends StatefulWidget {
+class Search extends StatelessWidget {
   //Map map;
   Search({super.key});
 
-  @override
-  State<Search> createState() => _SearchState();
-}
-
-class _SearchState extends State<Search> {
   final _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final history = context.watch<ApiDataRendering>().history;
     return Scaffold(
       body: SafeArea(
           child: Container(
@@ -43,7 +36,12 @@ class _SearchState extends State<Search> {
                 suffixIcon: IconButton(
                   icon: Icon(Icons.search),
                   onPressed: () {
-                    searchHistory(_controller.value.text);
+                    final text = searchHistory(_controller.value.text);
+                    if(text!=''){
+                      context.read<QuerypageBloc>().add(GetQuery(text));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Querypage()));
+                    }
                   },
                 ),
                 label: Text("Search for Recipe...."),
@@ -54,53 +52,32 @@ class _SearchState extends State<Search> {
                 fontSize: 15,
               ),
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: Provider.of<ApiDataRendering>(context).history.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
-                    onTap: () {
-                      searchHistory(Provider.of<ApiDataRendering>(context)
-                          .history.elementAt(index));
-                    },
-                    child: ListTile(
-                      leading: Icon(Icons.access_time),
-                      title: Text(history.elementAt(index)),
-                      trailing: Icon(Icons.arrow_outward_rounded),
-                    ),
-                  );
-                },
-              ),
-            ),
           ],
         ),
       )),
     );
   }
 
-  void searchHistory(String text) async {
+  String searchHistory(String text){
     RegExp re = RegExp(r'^[ ]+$');
     if (text == '' || re.hasMatch(text)) {
-      return;
+      return '';
     }
-    await Hive.initFlutter('searchHistory');
-    Box box = await Hive.openBox('Box');
-    text = text.trim();
-    if (box.get(text) == null) {
-      box.put(text, 1);
-    } else {
-      dynamic k = box.get(text);
-      box.delete(text);
-      box.put(text, k + 1);
-    }
-    dynamic keys = box.keys;
-    Map map = {};
-    for (var i in keys) {
-      map[i] = box.get(i);
-    }
-    Provider.of<ApiDataRendering>(context,listen:false).appendSearchQuery(text);
-    Navigator.push(context,
-              MaterialPageRoute(
-                  builder:(context) => SearchedPage()));
+    // await Hive.initFlutter('searchHistory');
+    // Box box = await Hive.openBox('Box');
+    // text = text.trim();
+    // if (box.get(text) == null) {
+    //   box.put(text, 1);
+    // } else {
+    //   dynamic k = box.get(text);
+    //   box.delete(text);
+    //   box.put(text, k + 1);
+    // }
+    // dynamic keys = box.keys;
+    // Map map = {};
+    // for (var i in keys) {
+    //   map[i] = box.get(i);
+    // }
+    return text;
   }
 }

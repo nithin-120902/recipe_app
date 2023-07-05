@@ -17,7 +17,7 @@ class _TitlePageState extends State<TitlePage> {
     Timer(
         const Duration(seconds: 5),
         () => Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Home()))); 
+            context, MaterialPageRoute(builder: (context) => Homepage()))); 
   }
 
   @override
