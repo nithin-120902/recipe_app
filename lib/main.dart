@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_sample/bloc/history/history_bloc.dart';
 import 'package:hive_sample/screens/titlepage.dart';
 
 import 'bloc/homepage/homepage_bloc.dart';
@@ -17,7 +18,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [BlocProvider(create: (context) => HomepageBloc(),),
-      BlocProvider(create: (context) => QuerypageBloc(),),],
+      BlocProvider(create: (context) => QuerypageBloc(),),
+      BlocProvider(create: (context) => HistoryBloc(),),],
       child: MaterialApp(
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

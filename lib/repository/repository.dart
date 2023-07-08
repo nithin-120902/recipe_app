@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'service/model.dart';
+import '../service/model.dart';
 
 import 'package:http/http.dart' as http;
 
