@@ -41,15 +41,8 @@ class DisplayList extends StatelessWidget {
                               image: NetworkImage(x.image.toString()),
                               fit: BoxFit.contain)),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              IconButton(color:Colors.black.withOpacity(0.5),onPressed: (){}, icon: Icon(Icons.format_list_bulleted_add)),
-                              IconButton(color:Colors.black.withOpacity(0.5),onPressed: (){}, icon: Icon(Icons.favorite_border)),
-                            ],
-                          ),
                           Container(
                             decoration: BoxDecoration(
                                 color: Colors.black.withOpacity(0.5),
@@ -57,10 +50,31 @@ class DisplayList extends StatelessWidget {
                                     bottomLeft: Radius.circular(20.0),
                                     bottomRight: Radius.circular(20.0))),
                             padding: EdgeInsets.all(3),
-                            height: 50,
-                            child: Center(
-                                child: Text(x.label.toString(),
-                                    style: TextStyle(color: Colors.white))),
+                            height: 100,
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    IconButton(
+                                        color: Colors.white,
+                                        onPressed: () {},
+                                        icon: Icon(
+                                            Icons.format_list_bulleted_add)),
+                                    IconButton(
+                                        color: Colors.white,
+                                        onPressed: () {},
+                                        icon: Icon(Icons.favorite_border)),
+                                  ],
+                                ),
+                                Expanded(
+                                  child: Center(
+                                      child: Text(x.label.toString(),
+                                          style: TextStyle(color: Colors.white))),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       )),

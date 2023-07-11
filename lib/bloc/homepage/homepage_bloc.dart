@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
-import '../../repository/repository.dart';
+import '../../repository/homepagerepository.dart';
 import '../../service/model.dart';
 
 part 'homepage_event.dart';

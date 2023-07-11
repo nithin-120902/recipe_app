@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
 import 'package:hive_flutter/hive_flutter.dart';
-import '../../repository/repository.dart';
+import '../../repository/querypagerepository.dart';
 import '../../service/model.dart';
 
 part 'querypage_event.dart';
